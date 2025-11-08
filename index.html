@@ -1,0 +1,2084 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ORA-TEK Engineering</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Add GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+      /* Add animation styles */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .slide-in-left {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+
+      .slide-in-right {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+
+      .scale-in {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      .parallax-bg {
+        position: relative;
+        transform: translateY(0);
+        will-change: transform;
+      }
+
+      /* Logo animation styles */
+      .logo-entrance {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .logo-entrance img {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+        transform: scale(0.5);
+      }
+
+      /* Add smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Enhanced hover effects */
+      .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 32px 55px rgba(0, 0, 0, 0.4);
+      }
+
+      .button {
+        position: relative;
+      }
+
+      /* Remove animation for contact button */
+      .cta .button {
+        transition: none;
+      }
+
+      /* Keep animations for other buttons */
+      .hero-cta .button {
+        overflow: hidden;
+      }
+
+      .hero-cta .button::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .hero-cta .button:hover::after {
+        transform: translateX(0);
+      }
+
+      /* Add floating animation to hero insights */
+      @keyframes float {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0); }
+      }
+
+      .insight-card {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .insight-card:nth-child(2) {
+        animation-delay: -2s;
+      }
+
+      .insight-card:nth-child(3) {
+        animation-delay: -4s;
+      }
+
+      :root {
+        color-scheme: dark;
+        font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont,
+          'Segoe UI', sans-serif;
+        background-color: #020c19;
+        color: #e7edf7;
+        --primary: #041020;
+        --primary-alt: #0b2747;
+        --primary-dark: #01070f;
+        --accent: #1e7df2;
+        --accent-soft: rgba(30, 125, 242, 0.14);
+        --surface: rgba(7, 26, 48, 0.92);
+        --surface-soft: rgba(9, 34, 60, 0.6);
+        --border: rgba(41, 92, 150, 0.38);
+        --text-strong: #ffffff;
+        --text: #d1e0f3;
+        --text-soft: #96abc2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        scroll-behavior: smooth;
+        background:
+          radial-gradient(circle at 15% 20%, rgba(30, 125, 242, 0.18), transparent 45%),
+          radial-gradient(circle at 80% 0%, rgba(30, 125, 242, 0.12), transparent 55%),
+          linear-gradient(180deg, rgba(4, 16, 32, 0.92), rgba(2, 12, 25, 0.94));
+        color: inherit;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(3, 15, 31, 0.9);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(41, 92, 150, 0.3);
+      }
+
+      .nav {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        max-width: min(1200px, 100%);
+        margin: 0 auto;
+        padding: clamp(0.75rem, 2vw, 1.1rem) clamp(1rem, 4vw, 2rem);
+        gap: 1rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .logo img {
+        width: clamp(120px, 14vw, 176px);
+        height: clamp(120px, 14vw, 176px);
+        object-fit: contain;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+        margin-left: auto;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text);
+        font-weight: 500;
+        font-size: 0.95rem;
+        letter-spacing: 0.01em;
+      }
+
+      .nav-links a:hover {
+        color: var(--text-strong);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+      }
+
+      .language-switcher {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem;
+        border-radius: 999px;
+        background: rgba(7, 26, 48, 0.85);
+        border: 1px solid rgba(41, 92, 150, 0.28);
+        backdrop-filter: blur(6px);
+      }
+
+      .language-button {
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        padding: 0.3rem 0.65rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+      }
+
+      .language-button:hover {
+        color: var(--text-strong);
+      }
+
+      .language-button.active {
+        background: rgba(30, 125, 242, 0.25);
+        color: var(--text-strong);
+        box-shadow: 0 8px 16px rgba(30, 125, 242, 0.28);
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(3rem, 8vw, 5rem);
+        padding: 0 clamp(1rem, 5vw, 2.5rem) clamp(3rem, 8vw, 5rem);
+      }
+
+      .hero {
+        background: linear-gradient(135deg, rgba(30, 125, 242, 0.18), rgba(4, 16, 32, 0.7));
+        border-radius: clamp(24px, 5vw, 36px);
+        padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1.25rem, 4vw, 3rem);
+        max-width: min(1200px, 100%);
+        margin: clamp(1.5rem, 4vw, 3rem) auto 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: clamp(1.75rem, 4vw, 2.75rem);
+        align-items: center;
+      }
+
+      .hero-content h1 {
+        margin: 0;
+        font-size: clamp(2.5rem, 4vw, 3.25rem);
+        line-height: 1.1;
+        color: var(--text-strong);
+      }
+
+      .hero-content p {
+        margin-top: 1.25rem;
+        font-size: 1.1rem;
+        color: var(--text);
+      }
+
+      .hero-cta {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .button {
+        background: var(--accent);
+        color: #fff;
+        padding: 0.85rem 1.75rem;
+        border-radius: 999px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 150ms ease, box-shadow 150ms ease;
+        box-shadow: 0 12px 28px rgba(30, 125, 242, 0.26);
+      }
+
+      .button.secondary {
+        background: transparent;
+        color: var(--accent);
+        border: 1px solid rgba(30, 125, 242, 0.4);
+        box-shadow: none;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 26px rgba(30, 125, 242, 0.3);
+      }
+
+      .hero-insights {
+        display: grid;
+        gap: clamp(1rem, 3vw, 1.5rem);
+      }
+
+      .insight-card {
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 20px;
+        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.32);
+        border: 1px solid rgba(41, 92, 150, 0.28);
+      }
+
+      .insight-card h3 {
+        margin: 0;
+        font-size: 1rem;
+        text-transform: uppercase;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+      }
+
+      .insight-card p {
+        margin: 0.75rem 0 0;
+        color: var(--text);
+        line-height: 1.55;
+      }
+
+      .hero-image-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: clamp(20px, 4vw, 28px);
+        border: 1px solid rgba(41, 92, 150, 0.28);
+        box-shadow: 0 28px 48px rgba(0, 0, 0, 0.35);
+        min-height: clamp(240px, 40vw, 360px);
+        background: rgba(7, 26, 48, 0.85);
+        display: flex;
+        align-items: flex-end;
+      }
+
+      .hero-image-card img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 400ms ease;
+      }
+
+      .hero-image-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(4, 16, 32, 0.05), rgba(4, 16, 32, 0.75));
+      }
+
+      .hero-image-overlay {
+        position: relative;
+        z-index: 1;
+        padding: clamp(1.25rem, 4vw, 1.75rem);
+        color: var(--text-strong);
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      .hero-image-overlay span {
+        font-size: 0.75rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(230, 240, 255, 0.8);
+      }
+
+      .hero-image-overlay strong {
+        font-size: clamp(1.15rem, 3vw, 1.4rem);
+        font-weight: 600;
+        line-height: 1.35;
+      }
+
+      .hero-image-card:hover img {
+        transform: scale(1.05);
+      }
+
+      section {
+        max-width: min(1200px, 100%);
+        margin: 0 auto;
+      }
+
+      section header {
+        background: none;
+        border: none;
+        position: static;
+        padding: 0;
+      }
+
+      .section-heading {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        margin-bottom: 2rem;
+      }
+
+      .section-heading span {
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 2.6rem);
+        color: var(--text-strong);
+      }
+
+      .section-heading p {
+        margin: 0;
+        color: var(--text);
+        max-width: 720px;
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.75rem;
+      }
+
+      .card {
+        background: var(--surface);
+        padding: 2rem;
+        border-radius: 24px;
+        border: 1px solid rgba(41, 92, 150, 0.26);
+        box-shadow: 0 28px 45px rgba(0, 0, 0, 0.32);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .card-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 999px;
+        padding: 0.4rem 0.85rem;
+      }
+
+      .card h3 {
+        margin: 0;
+        font-size: 1.35rem;
+        color: var(--text-strong);
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .card ul {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: var(--text);
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .split-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: clamp(1.5rem, 4vw, 3rem);
+        align-items: center;
+        background: linear-gradient(145deg, rgba(9, 34, 60, 0.95), rgba(4, 16, 32, 0.92));
+        padding: clamp(2rem, 6vw, 3.5rem);
+        border-radius: clamp(24px, 5vw, 32px);
+        border: 1px solid rgba(41, 92, 150, 0.28);
+        box-shadow: 0 32px 55px rgba(0, 0, 0, 0.36);
+      }
+
+      .split-section img {
+        width: 100%;
+        border-radius: 20px;
+        object-fit: cover;
+        max-height: 320px;
+        border: 1px solid rgba(41, 92, 150, 0.28);
+        box-shadow: 0 24px 45px rgba(0, 0, 0, 0.28);
+      }
+
+      /* Expert image emphasis to increase visibility */
+      .expert-image {
+        width: 100%;
+        min-width: 320px;
+        max-width: 480px;
+        min-height: 260px;
+        aspect-ratio: 4/3;
+        margin: 0 auto 1.5rem auto;
+        border-radius: 18px;
+        object-fit: cover;
+        border: 4px solid var(--accent);
+        box-shadow: 0 0 0 8px rgba(30,125,242,0.12), 0 36px 72px rgba(0,0,0,0.65), 0 0 32px 0 rgba(30,125,242,0.18);
+        background: linear-gradient(120deg, rgba(30,125,242,0.10) 0%, rgba(4,16,32,0.12) 100%);
+        transform: translateZ(0) scale(1.04);
+        transition: transform 220ms cubic-bezier(.4,1.6,.6,1), filter 220ms, box-shadow 220ms;
+        filter: brightness(1.13) contrast(1.10) saturate(1.08);
+        display: block;
+        z-index: 2;
+        position: relative;
+      }
+
+      .expert-image:hover {
+        transform: scale(1.08);
+        filter: brightness(1.18) contrast(1.13) saturate(1.12);
+        box-shadow: 0 0 0 12px rgba(30,125,242,0.18), 0 56px 112px rgba(0,0,0,0.75), 0 0 48px 0 rgba(30,125,242,0.22);
+      }
+
+      .machines-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: clamp(1.5rem, 4vw, 2.5rem);
+        margin-top: 2rem;
+      }
+
+      .machine-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: clamp(18px, 3vw, 24px);
+        border: 1px solid rgba(41, 92, 150, 0.28);
+        box-shadow: 0 24px 42px rgba(0, 0, 0, 0.32);
+        background: var(--surface);
+        aspect-ratio: 4 / 3;
+        transition: transform 300ms ease, box-shadow 300ms ease;
+        cursor: pointer;
+      }
+
+      .machine-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 32px 52px rgba(0, 0, 0, 0.4);
+      }
+
+      .machine-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 400ms ease;
+      }
+
+      .machine-card:hover img {
+        transform: scale(1.08);
+      }
+
+      .machine-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(4, 16, 32, 0.3) 60%, rgba(4, 16, 32, 0.85) 100%);
+        display: flex;
+        align-items: flex-end;
+        padding: clamp(1rem, 3vw, 1.5rem);
+        opacity: 0;
+        transition: opacity 300ms ease;
+      }
+
+      .machine-card:hover .machine-overlay {
+        opacity: 1;
+      }
+
+      .machine-label {
+        color: var(--text-strong);
+        font-size: clamp(0.85rem, 2vw, 1rem);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+
+      .lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: rgba(1, 7, 15, 0.96);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 300ms ease, visibility 300ms ease;
+      }
+
+      .lightbox.open {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .lightbox-content {
+        position: relative;
+        max-width: min(90vw, 1200px);
+        max-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .lightbox-image {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: clamp(16px, 3vw, 24px);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+      }
+
+      .lightbox-close {
+        position: absolute;
+        top: -3rem;
+        right: 0;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid rgba(41, 92, 150, 0.4);
+        background: rgba(7, 26, 48, 0.9);
+        color: var(--text-strong);
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 200ms ease, transform 200ms ease;
+      }
+
+      .lightbox-close:hover {
+        background: rgba(30, 125, 242, 0.3);
+        transform: scale(1.1);
+      }
+
+      .lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: 1px solid rgba(41, 92, 150, 0.4);
+        background: rgba(7, 26, 48, 0.9);
+        color: var(--text-strong);
+        font-size: 1.25rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 200ms ease, transform 200ms ease;
+      }
+
+      .lightbox-nav:hover {
+        background: rgba(30, 125, 242, 0.3);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .lightbox-nav.prev {
+        left: -3rem;
+      }
+
+      .lightbox-nav.next {
+        right: -3rem;
+      }
+
+      .lightbox-counter {
+        position: absolute;
+        bottom: -3rem;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--text);
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+      }
+
+      @media (max-width: 860px) {
+        .lightbox-nav {
+          width: 44px;
+          height: 44px;
+          font-size: 1rem;
+        }
+
+        .lightbox-nav.prev {
+          left: 1rem;
+        }
+
+        .lightbox-nav.next {
+          right: 1rem;
+        }
+
+        .lightbox-close {
+          top: 1rem;
+          right: 1rem;
+        }
+
+        .lightbox-counter {
+          bottom: 1rem;
+        }
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .metric {
+        background: var(--surface);
+        border-radius: 20px;
+        padding: 1.5rem;
+        border: 1px solid rgba(41, 92, 150, 0.26);
+        text-align: center;
+        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.28);
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 2rem;
+        color: var(--accent);
+      }
+
+      .metric span {
+        color: var(--text);
+        letter-spacing: 0.02em;
+      }
+
+      .cta {
+        background: linear-gradient(135deg, rgba(30, 125, 242, 0.28), rgba(4, 16, 32, 0.95));
+        color: #fff;
+        padding: clamp(2.5rem, 7vw, 3.75rem);
+        border-radius: clamp(26px, 6vw, 36px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at top right,
+          rgba(30, 125, 242, 0.4),
+          transparent 45%
+        );
+        pointer-events: none;
+      }
+
+      .cta-content {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .cta h2 {
+        margin: 0 0 1rem;
+        font-size: clamp(2rem, 3vw, 2.6rem);
+      }
+
+      .cta p {
+        margin: 0;
+        color: rgba(230, 240, 255, 0.88);
+        line-height: 1.6;
+      }
+
+      footer {
+        background: #01070f;
+        color: rgba(225, 235, 250, 0.78);
+        padding: clamp(2.5rem, 7vw, 3.5rem) clamp(1.25rem, 5vw, 2.5rem);
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2.5rem;
+      }
+
+      .footer-content h4 {
+        margin: 0 0 0.8rem;
+        color: #f5faff;
+        font-size: 1.1rem;
+      }
+
+      .footer-links {
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .footer-links a,
+      .footer-links span {
+        color: rgba(225, 235, 250, 0.78);
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+
+      .footer-links a:hover {
+        color: #f5faff;
+      }
+
+      .footer-bottom {
+        max-width: 1200px;
+        margin: 2.5rem auto 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: rgba(192, 208, 226, 0.76);
+      }
+
+      .nav-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid rgba(41, 92, 150, 0.34);
+        background: rgba(7, 26, 48, 0.92);
+        cursor: pointer;
+        color: var(--text);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+      }
+
+      .nav-toggle span,
+      .nav-toggle span::before,
+      .nav-toggle span::after {
+        display: block;
+        position: relative;
+        width: 18px;
+        height: 2px;
+        border-radius: 999px;
+        background: currentColor;
+        transition: transform 200ms ease, opacity 200ms ease;
+      }
+
+      .nav-toggle span::before,
+      .nav-toggle span::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+
+      .nav-toggle span::before {
+        transform: translateY(-6px);
+      }
+
+      .nav-toggle span::after {
+        transform: translateY(6px);
+      }
+
+      .nav-toggle.active span {
+        background: transparent;
+      }
+
+      .nav-toggle.active span::before {
+        transform: rotate(45deg);
+      }
+
+      .nav-toggle.active span::after {
+        transform: rotate(-45deg);
+      }
+
+      @media (max-width: 1024px) {
+        .hero-content p,
+        .section-heading p {
+          font-size: 1rem;
+        }
+
+        .card {
+          padding: clamp(1.5rem, 4vw, 2.25rem);
+        }
+
+        .cards-grid {
+          gap: clamp(1.25rem, 4vw, 2rem);
+        }
+      }
+
+      @media (max-width: 860px) {
+        .nav-links {
+          position: absolute;
+          top: calc(100% + 0.75rem);
+          right: clamp(1rem, 4vw, 2rem);
+          width: min(280px, calc(100% - 2rem));
+          flex-direction: column;
+          align-items: flex-start;
+          background: rgba(7, 26, 48, 0.98);
+          border-radius: 20px;
+          border: 1px solid rgba(41, 92, 150, 0.32);
+          box-shadow: 0 28px 55px rgba(0, 0, 0, 0.42);
+          padding: 1.25rem;
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          transform: translateY(-6px);
+        }
+
+        .nav-links.open {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: translateY(0);
+        }
+
+        .nav-links a {
+          width: 100%;
+          padding: 0.65rem 0;
+          color: var(--text-strong);
+        }
+
+        .nav-toggle {
+          display: inline-flex;
+        }
+
+        .nav-actions {
+          gap: 0.6rem;
+        }
+
+        .language-switcher {
+          padding: 0.2rem;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .hero {
+          text-align: center;
+        }
+
+        .hero-cta {
+          justify-content: center;
+        }
+
+        .section-heading {
+          text-align: center;
+        }
+
+        .section-heading p {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .split-section {
+          text-align: center;
+        }
+
+        .split-section img {
+          order: -1;
+        }
+
+        .footer-bottom {
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .logo img {
+          width: clamp(108px, 28vw, 144px);
+          height: clamp(108px, 28vw, 144px);
+        }
+
+        .hero-content h1 {
+          font-size: clamp(2.1rem, 8vw, 2.6rem);
+        }
+
+        .button {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .footer-content {
+          gap: 1.75rem;
+        }
+
+        .language-button {
+          font-size: 0.7rem;
+          padding: 0.25rem 0.5rem;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .logo img {
+          width: clamp(96px, 32vw, 132px);
+          height: clamp(96px, 32vw, 132px);
+        }
+
+        .language-button {
+          font-size: 0.62rem;
+          padding: 0.2rem 0.45rem;
+        }
+
+        .metrics {
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .hero {
+          padding: 2.25rem 1.25rem;
+        }
+
+        .split-section {
+          padding: 2rem 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Add logo entrance animation -->
+    <div class="logo-entrance">
+      <img src="./logo.jpg" alt="ORA-TEK Engineering" />
+    </div>
+
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const translations = {
+        fr: {
+          languageSwitcherLabel: 'Changer de langue',
+          nav: { contact: 'Contact' },
+          navToggle: { open: 'Ouvrir le menu', close: 'Fermer le menu' },
+          hero: {
+            title: 'ORA-TEK Engineering : L’excellence au service de votre industrie.',
+            description:
+              'Chez ORA-TEK Engineering, nous sommes votre partenaire de confiance pour des solutions industrielles sur mesure. Grâce à notre savoir-faire et à notre parc de machines modernes, nous vous accompagnons à chaque étape de vos projets — de la conception à la production.',
+            ctaPrimary: 'Nous contacter',
+            ctaSecondary: 'Découvrir nos expertises',
+            insights: [
+              {
+                title: 'Vision',
+                text: 'Anticiper les enjeux industriels de demain et offrir des réponses innovantes, fiables et évolutives.'
+              },
+              {
+                title: 'Engagement',
+                text: 'Nous sécurisons vos délais, garantissons la qualité et assurons la traçabilité totale de chaque projet.'
+              }
+            ]
+          },
+          services: {
+            label: 'Nos services',
+            title: 'Des expertises opérationnelles pour accélérer votre performance',
+            description:
+              'Une offre intégrée couvrant la production, l’ingénierie, le management de projet et la formation afin de soutenir durablement votre compétitivité.',
+            sections: [
+              {
+                id: 'production',
+                badge: 'Production',
+                title: 'Fabrication de précision sur CNC FANUC 3 axes',
+                description:
+                  'Nous réalisons vos pièces en petite, moyenne ou grande série avec une maîtrise des tolérances et une réactivité exemplaire.',
+                points: [
+                  'Usinage CNC haute précision, petites à grandes séries',
+                  'Fabrication de prototypes et préséries express',
+                  'Contrôle qualité intégré et certificats de conformité'
+                ]
+              },
+              {
+                id: 'engineering',
+                badge: 'Engineering',
+                title: 'Solutions techniques personnalisées',
+                description:
+                  'De l’idée à l’industrialisation, nos ingénieurs conçoivent des solutions innovantes adaptées aux contraintes des secteurs horloger et mécanique.',
+                points: [
+                  'Études mécaniques et conception 3D',
+                  'Industrialisation et optimisation des process',
+                  'Support R&D et accompagnement innovation'
+                ]
+              },
+              {
+                id: 'management',
+                badge: 'Management',
+                title: 'Pilotage & optimisation de vos projets',
+                description:
+                  'Management de transition, conduite de projets stratégiques et amélioration continue : nous transformons vos ambitions en résultats.',
+                points: [
+                  'Direction de projets industriels critiques',
+                  'Management de transition et conduite du changement',
+                  'Audits opérationnels et plans d’amélioration'
+                ]
+              },
+              {
+                id: 'formation',
+                badge: 'Formation',
+                title: 'Renforcez les compétences de vos équipes',
+                description:
+                  'Formations ciblées en organisation industrielle, lean management, gestion de projet et production pour accélérer la montée en compétences.',
+                points: [
+                  'Programmes sur-mesure en lean management',
+                  'Formations en gestion de production et planification',
+                  'Coaching des équipes projets et managers'
+                ]
+              }
+            ]
+          },
+          machines: {
+            label: 'Notre parc machines',
+            title: 'Équipements de précision pour l’excellence industrielle',
+            description: 'Un parc moderne et performant pour répondre à vos besoins de production les plus exigeants.'
+          },
+          expertise: {
+            label: 'Domaines maîtres',
+            title: 'Une expertise pointue pour des industries exigeantes',
+            description:
+              'Notre accompagnement s’appuie sur une compréhension fine de vos métiers et sur des standards de qualité reconnus à l’international.',
+            pillars: [
+              {
+                title: 'Horlogerie',
+                points: ['Pré-assemblage', 'Production débauches', 'Respect des délais court et flexible' , 'Industrialisation']
+              },
+              {
+                title: 'Mécanique de précision',
+                points: ['Industrialisation agile', 'Traçabilité complète', 'Production flexible, petite, moyenne & grande série' , 'Partenariat long terme']
+              },
+              {
+                title: 'Mécanique générale',
+                points: ['Maintenance et retrofit', 'Production flexible', 'Partenariat long terme']
+              }
+            ]
+          },
+          engagements: {
+            label: 'Nos engagements',
+            title: 'Un partenaire industriel durable et responsable',
+            description:
+              'Performance, innovation et développement durable guident chacune de nos décisions pour créer des collaborations à long terme.',
+            metrics: [
+              { value: '15+', label: 'Années de savoir-faire industriel' },
+              { value: '2', label: 'Fraiseuses CNC FANUC Robodrill' },
+              { value: '4', label: 'Domaines d’expertise complémentaires' },
+              { value: '100%', label: 'Engagement qualité et traçabilité' }
+            ]
+          },
+          cta: {
+            title: 'Prêts à accélérer votre transformation industrielle ?',
+            description:
+              'Discutons de vos enjeux de production, d’innovation ou de formation et construisons ensemble la prochaine étape de votre compétitivité.',
+            button: 'Contact direct',
+            info: ['+383 44 923 233', '+41 78 744 16 71', 'Rruga Hasan Prishtina Nr.97, 61000 Viti']
+          },
+          footer: {
+            columns: [
+              {
+                title: 'ORA-TEK Engineering',
+                items: ['Rruga Hasan Prishtina Nr.97', '61000 Viti', 'arafat.sahiti@ora-tek-engineering.com', '+383 44 923 233', '+41 78 744 16 71']
+              },
+              {
+                title: 'Solutions',
+                items: ['Production', 'Engineering', 'Management', 'Formation']
+              },
+              {
+                title: 'Ressources',
+                items: ['Brochure corporate', 'Livres blancs', 'Guide de transition lean']
+              }
+            ],
+            stayConnected: 'Restez connectés',
+            linkedin: 'LinkedIn',
+            inspiration: 'Inspirez-vous de nos pairs'
+          },
+          footerBottom: {
+            rights: '© {year} ORA-TEK Engineering. Tous droits réservés.',
+            legal: 'Mentions légales · Politique de confidentialité'
+          }
+        },
+        en: {
+          languageSwitcherLabel: 'Change language',
+          nav: { contact: 'Contact' },
+          navToggle: { open: 'Open menu', close: 'Close menu' },
+          hero: {
+            title: 'ORA-TEK Engineering: Excellence powering your industry.',
+            description:
+              'At ORA-TEK Engineering we are your trusted partner for tailor-made industrial solutions. With deep expertise and a modern machine park, we support every stage of your projects—from concept to production.',
+            ctaPrimary: 'Contact us',
+            ctaSecondary: 'Explore our expertise',
+            insights: [
+              {
+                title: 'Vision',
+                text: 'Anticipating tomorrow’s industrial challenges with innovative, reliable and scalable answers.'
+              },
+              {
+                title: 'Commitment',
+                text: 'We secure lead times, deliver certified quality and ensure complete traceability for every project.'
+              }
+            ]
+          },
+          services: {
+            label: 'Our services',
+            title: 'Operational expertise to accelerate your performance',
+            description:
+              'An integrated offer spanning production, engineering, project leadership and training to strengthen your competitiveness over the long run.',
+            sections: [
+              {
+                id: 'production',
+                badge: 'Production',
+                title: 'Precision manufacturing on FANUC 3-axis CNC',
+                description:
+                  'We produce small, medium or large batches with tight tolerance control and fast turnaround.',
+                points: [
+                  'High-precision CNC machining from prototypes to series',
+                  'Express production for prototypes and pre-series',
+                  'Integrated quality control and compliance certificates'
+                ]
+              },
+              {
+                id: 'engineering',
+                badge: 'Engineering',
+                title: 'Tailor-made technical solutions',
+                description:
+                  'From idea to industrialisation, our engineers design innovative solutions tuned to watchmaking and precision mechanics requirements.',
+                points: [
+                  'Mechanical studies and 3D design',
+                  'Process industrialisation and optimisation',
+                  'R&D support and innovation coaching'
+                ]
+              },
+              {
+                id: 'management',
+                badge: 'Management',
+                title: 'Steer and optimise your industrial projects',
+                description:
+                  'Interim leadership, strategic project management and continuous improvement to turn ambition into results.',
+                points: [
+                  'Leadership for mission-critical industrial projects',
+                  'Interim management and change enablement',
+                  'Operational audits and improvement roadmaps'
+                ]
+              },
+              {
+                id: 'formation',
+                badge: 'Training',
+                title: 'Develop your teams’ capabilities',
+                description:
+                  'Focused programmes in industrial organisation, lean management, project governance and production excellence.',
+                points: [
+                  'Custom programmes in lean management',
+                  'Training in production planning and control',
+                  'Coaching for project teams and leaders'
+                ]
+              }
+            ]
+          },
+          machines: {
+            label: 'Our machine park',
+            title: 'Precision equipment for industrial excellence',
+            description: 'A modern, high-performance machine park to meet your most demanding production needs.'
+          },
+          expertise: {
+            label: 'Core domains',
+            title: 'Specialised expertise for demanding industries',
+            description:
+              'We build on a deep understanding of your professions and internationally recognised quality standards.',
+            pillars: [
+              {
+                title: 'Watchmaking',
+                points: ['High-precision assembly', 'Premium finishing', 'On-time delivery reliability']
+              },
+              {
+                title: 'Precision mechanics',
+                points: ['Tight tolerance mastery', 'Agile industrialisation', 'Full traceability']
+              },
+              {
+                title: 'General mechanics',
+                points: ['Maintenance and retrofit', 'Flexible production capacity', 'Long-term partnership mindset']
+              }
+            ]
+          },
+          engagements: {
+            label: 'Our commitments',
+            title: 'A sustainable and responsible industrial partner',
+            description:
+              'Performance, innovation and sustainability guide every decision to build lasting collaborations.',
+            metrics: [
+              { value: '15+', label: 'Years of industrial expertise' },
+              { value: '2', label: 'FANUC Robodrill CNC machines' },
+              { value: '4', label: 'Complementary domains of expertise' },
+              { value: '100%', label: 'Quality and traceability commitment' }
+            ]
+          },
+          cta: {
+            title: 'Ready to accelerate your industrial transformation?',
+            description:
+              'Let’s discuss your production, innovation or training challenges and build the next stage of your competitiveness together.',
+            button: 'Get in touch',
+            info: ['+383 44 923 233', '+41 78 744 16 71', 'Rruga Hasan Prishtina Nr.97, 61000 Viti']
+          },
+          footer: {
+            columns: [
+              {
+                title: 'ORA-TEK Engineering',
+                items: ['Rruga Hasan Prishtina Nr.97', '61000 Viti', 'arafat.sahiti@ora-tek-engineering.com', '+383 44 923 233', '+41 78 744 16 71']
+              },
+              {
+                title: 'Solutions',
+                items: ['Production', 'Engineering', 'Management', 'Training']
+              },
+              {
+                title: 'Resources',
+                items: ['Corporate brochure', 'White papers', 'Lean transition guide']
+              }
+            ],
+            stayConnected: 'Stay connected',
+            linkedin: 'LinkedIn',
+            inspiration: 'Get inspired by our peers'
+          },
+          footerBottom: {
+            rights: '© {year} ORA-TEK Engineering. All rights reserved.',
+            legal: 'Legal notice · Privacy policy'
+          }
+        },
+        sq: {
+          languageSwitcherLabel: 'Ndrysho gjuhën',
+          nav: { contact: 'Kontakt' },
+          navToggle: { open: 'Hap menunë', close: 'Mbyll menunë' },
+          hero: {
+            title: 'ORA-TEK Engineering: Ekselenca në shërbim të industrisë suaj.',
+            description:
+              'Te ORA-TEK Engineering jemi partneri juaj i besuar për zgjidhje industriale të personalizuara. Me eksperiencë të thellë dhe një park modern makinerish, ju mbështesim në çdo fazë të projekteve — nga koncepti deri në prodhim.',
+            ctaPrimary: 'Na kontaktoni',
+            ctaSecondary: 'Zbuloni ekspertizat tona',
+            insights: [
+              {
+                title: 'Vizion',
+                text: 'Parashikojmë sfidat industriale të së nesërmes dhe ofrojmë zgjidhje novatore, të besueshme dhe të shkallëzueshme.'
+              },
+              {
+                title: 'Përkushtim',
+                text: 'Sigurojmë afatet, garantojmë cilësinë dhe mbajmë gjurmueshmëri të plotë për çdo projekt.'
+              }
+            ]
+          },
+          services: {
+            label: 'Shërbimet tona',
+            title: 'Ekspertizë operative për të rritur performancën tuaj',
+            description:
+              'Një ofertë e integruar që mbulon prodhimin, inxhinierinë, menaxhimin e projekteve dhe trajnimin për të forcuar në mënyrë të qëndrueshme konkurrueshmërinë tuaj.',
+            sections: [
+              {
+                id: 'production',
+                badge: 'Prodhim',
+                title: 'Prodhim preciz në CNC FANUC me 3 boshte',
+                description:
+                  'Realizojmë seri të vogla, të mesme apo të mëdha me kontroll të lartë tolerancash dhe kohë të shpejtë dorëzimi.',
+                points: [
+                  'Përpunim CNC me precizion nga prototipe në seri',
+                  'Prodhim i shpejtë i prototipeve dhe paraserive',
+                  'Kontroll cilësie i integruar dhe certifikata përputhshmërie'
+                ]
+              },
+              {
+                id: 'engineering',
+                badge: 'Inxhinieri',
+                title: 'Zgjidhje teknike të personalizuara',
+                description:
+                  'Nga ideja deri në industrializim, inxhinierët tanë projektojnë zgjidhje inovative të përshtatura për orëndreqësinë dhe mekanikën e precizionit.',
+                points: [
+                  'Studime mekanike dhe dizajn 3D',
+                  'Industrializim dhe optimizim procesesh',
+                  'Mbështetje R&D dhe mentorim inovacioni'
+                ]
+              },
+              {
+                id: 'management',
+                badge: 'Menaxhim',
+                title: 'Drejtoni dhe optimizoni projektet tuaja industriale',
+                description:
+                  'Menaxhim i përkohshëm, drejtim projektesh strategjike dhe përmirësim i vazhdueshëm për t’i kthyer aspiratat në rezultate.',
+                points: [
+                  'Drejtim i projekteve kritike industriale',
+                  'Menaxhim tranzicioni dhe menaxhim i ndryshimit',
+                  'Audite operative dhe plane përmirësimi'
+                ]
+              },
+              {
+                id: 'formation',
+                badge: 'Trajnim',
+                title: 'Zhvilloni aftësitë e ekipeve tuaja',
+                description:
+                  'Programe të fokusuara në organizim industrial, lean management, drejtim projektesh dhe ekselencë në prodhim.',
+                points: [
+                  'Programe të personalizuara në lean management',
+                  'Trajnime për planifikim dhe kontroll prodhimi',
+                  'Coaching për ekipe projektesh dhe drejtues'
+                ]
+              }
+            ]
+          },
+          machines: {
+            label: 'Parku ynë i makinerive',
+            title: 'Pajisje precizie për ekselencë industriale',
+            description: 'Një park modern dhe performant makinerish për të përmbushur nevojat tuaja më kërkuese të prodhimit.'
+          },
+          expertise: {
+            label: 'Fushat kryesore',
+            title: 'Ekspertizë e specializuar për industri kërkuese',
+            description:
+              'Mbi bazën e njohjes së thellë të profesioneve tuaja dhe standardeve ndërkombëtare të cilësisë ndërtojmë bashkëpunime të qëndrueshme.',
+            pillars: [
+              {
+                title: 'Orëndreqësia',
+                points: ['Montim me precizion të lartë', 'Përfundime premium', 'Respektim strikt i afateve']
+              },
+              {
+                title: 'Mekanika e precizionit',
+                points: ['Kontroll i fortë i tolerancave', 'Industrializim agil', 'Gjurmueshmëri e plotë']
+              },
+              {
+                title: 'Mekanika e përgjithshme',
+                points: ['Mirëmbajtje dhe retrofit', 'Kapacitete fleksibël prodhimi', 'Partneritet afatgjatë']
+              }
+            ]
+          },
+          engagements: {
+            label: 'Angazhimet tona',
+            title: 'Një partner industrial i qëndrueshëm dhe i përgjegjshëm',
+            description:
+              'Performanca, inovacioni dhe qëndrueshmëria udhëheqin çdo vendim për të krijuar bashkëpunime afatgjata.',
+            metrics: [
+              { value: '15+', label: 'Vite përvojë industriale' },
+              { value: '2', label: 'Makina CNC FANUC Robodrill' },
+              { value: '4', label: 'Fusha plotësuese ekspertize' },
+              { value: '100%', label: 'Angazhim për cilësi dhe gjurmueshmëri' }
+            ]
+          },
+          cta: {
+            title: 'Gati të përshpejtoni transformimin tuaj industrial?',
+            description:
+              'Le të diskutojmë për sfidat tuaja në prodhim, inovacion ose trajnim dhe të ndërtojmë së bashku hapin tjetër të konkurrueshmërisë suaj.',
+            button: 'Kontakt i drejtpërdrejtë',
+            info: ['+383 44 923 233', '+41 78 744 16 71', 'Rruga Hasan Prishtina Nr.97, 61000 Viti']
+          },
+          footer: {
+            columns: [
+              {
+                title: 'ORA-TEK Engineering',
+                items: ['Immeuble Industriel 12', 'CH-2500 Bienne', 'info@ora-tek.ch', '+41 32 555 77 21']
+              },
+              {
+                title: 'Zgjidhje',
+                items: ['Prodhim', 'Inxhinieri', 'Menaxhim', 'Trajnim']
+              },
+              {
+                title: 'Burime',
+                items: ['Broshurë korporate', 'Materiale informative', 'Udhëzues për tranzicion lean']
+              }
+            ],
+            stayConnected: 'Qëndroni të lidhur',
+            linkedin: 'LinkedIn',
+            inspiration: 'Frymëzohuni nga partnerët tanë'
+          },
+          footerBottom: {
+            rights: '© {year} ORA-TEK Engineering. Të gjitha të drejtat e rezervuara.',
+            legal: 'Kushtet ligjore · Privatësia'
+          }
+        }
+      };
+
+      const languageShortCodes = {
+        fr: 'FR',
+        en: 'EN',
+        sq: 'AL'
+      };
+
+      function App() {
+        const [language, setLanguage] = React.useState('fr');
+        const [menuOpen, setMenuOpen] = React.useState(false);
+        const [lightboxOpen, setLightboxOpen] = React.useState(false);
+        const [lightboxIndex, setLightboxIndex] = React.useState(0);
+  const [expertLightboxOpen, setExpertLightboxOpen] = React.useState(false);
+  const [expertLightboxIndex, setExpertLightboxIndex] = React.useState(0);
+
+        // Add animation initialization
+        React.useEffect(() => {
+          // Initialize GSAP ScrollTrigger
+          gsap.registerPlugin(ScrollTrigger);
+
+          // Logo entrance animation
+          const entranceTimeline = gsap.timeline();
+          entranceTimeline
+            .to('.logo-entrance img', {
+              opacity: 1,
+              scale: 1,
+              duration: 1,
+              ease: 'power3.out'
+            })
+            .to('.logo-entrance img', {
+              opacity: 0,
+              scale: 1.2,
+              duration: 0.5,
+              delay: 0.5
+            })
+            .to('.logo-entrance', {
+              opacity: 0,
+              duration: 0.5,
+              onComplete: () => {
+                document.querySelector('.logo-entrance').style.display = 'none';
+              }
+            });
+
+          // Animate hero section
+          gsap.from('.hero-content h1', {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            delay: 2,
+            ease: 'power3.out'
+          });
+
+          gsap.from('.hero-content p', {
+            opacity: 0,
+            y: 30,
+            duration: 1,
+            delay: 2.2,
+            ease: 'power3.out'
+          });
+
+          gsap.from('.hero-cta', {
+            opacity: 0,
+            y: 20,
+            duration: 1,
+            delay: 2.4,
+            ease: 'power3.out'
+          });
+
+          // Parallax effect for hero image
+          gsap.to('.hero-image-card', {
+            scrollTrigger: {
+              trigger: '.hero',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true
+            },
+            y: 100,
+            ease: 'none'
+          });
+
+          // Animate sections on scroll
+          const sections = document.querySelectorAll('section:not(.hero)');
+          sections.forEach(section => {
+            gsap.from(section, {
+              scrollTrigger: {
+                trigger: section,
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none reverse'
+              },
+              opacity: 0,
+              y: 50,
+              duration: 1,
+              ease: 'power3.out'
+            });
+          });
+
+          // Animate cards with stagger
+          gsap.from('.card', {
+            scrollTrigger: {
+              trigger: '.cards-grid',
+              start: 'top 80%',
+            },
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: 'power3.out'
+          });
+
+          // Parallax effect for background sections
+          document.querySelectorAll('.split-section').forEach(section => {
+            gsap.to(section, {
+              scrollTrigger: {
+                trigger: section,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true
+              },
+              backgroundPosition: '50% 70%',
+              ease: 'none'
+            });
+          });
+
+          // Animate metrics with counter effect
+          const metrics = document.querySelectorAll('.metric strong');
+          metrics.forEach(metric => {
+            const value = metric.textContent;
+            const endValue = parseInt(value) || 0;
+            
+            gsap.from(metric, {
+              scrollTrigger: {
+                trigger: metric,
+                start: 'top 80%'
+              },
+              textContent: 0,
+              duration: 2,
+              snap: { textContent: 1 },
+              ease: 'power1.inOut'
+            });
+          });
+
+        }, []);
+
+  const machineImages = ['./ora2.jpg', './ora3.jpg', './ora4.jpg', './ora5.jpg'];
+  const expertiseImages = ['./orajasht.jpg', './orastore.jpg'];
+        const machineLabels = ['CNC Precision', 'Advanced Manufacturing', 'Industrial Excellence', 'Precision Engineering'];
+
+        React.useEffect(() => {
+          const handleResize = () => {
+            if (window.innerWidth > 860) {
+              setMenuOpen(false);
+            }
+          };
+
+          window.addEventListener('resize', handleResize);
+          return () => window.removeEventListener('resize', handleResize);
+        }, []);
+
+        React.useEffect(() => {
+          setMenuOpen(false);
+        }, [language]);
+
+        React.useEffect(() => {
+          const handleKeyDown = (e) => {
+            if (lightboxOpen) {
+              if (e.key === 'Escape') {
+                setLightboxOpen(false);
+              } else if (e.key === 'ArrowLeft') {
+                setLightboxIndex((prev) => (prev > 0 ? prev - 1 : machineImages.length - 1));
+              } else if (e.key === 'ArrowRight') {
+                setLightboxIndex((prev) => (prev < machineImages.length - 1 ? prev + 1 : 0));
+              }
+            }
+
+            if (expertLightboxOpen) {
+              if (e.key === 'Escape') {
+                setExpertLightboxOpen(false);
+              } else if (e.key === 'ArrowLeft') {
+                setExpertLightboxIndex((prev) => (prev > 0 ? prev - 1 : expertiseImages.length - 1));
+              } else if (e.key === 'ArrowRight') {
+                setExpertLightboxIndex((prev) => (prev < expertiseImages.length - 1 ? prev + 1 : 0));
+              }
+            }
+          };
+
+          window.addEventListener('keydown', handleKeyDown);
+          return () => window.removeEventListener('keydown', handleKeyDown);
+        }, [lightboxOpen, machineImages.length, expertLightboxOpen, expertiseImages.length]);
+
+        React.useEffect(() => {
+          if (lightboxOpen) {
+            document.body.style.overflow = 'hidden';
+          } else {
+            document.body.style.overflow = '';
+          }
+          return () => {
+            document.body.style.overflow = '';
+          };
+        }, [lightboxOpen]);
+
+        const toggleMenu = () => setMenuOpen((prev) => !prev);
+        const handleNavClick = () => setMenuOpen(false);
+        const handleLanguageChange = (code) => {
+          setLanguage(code);
+        };
+
+        const openLightbox = (index) => {
+          setLightboxIndex(index);
+          setLightboxOpen(true);
+        };
+
+        const closeLightbox = () => {
+          setLightboxOpen(false);
+        };
+
+        const nextImage = () => {
+          setLightboxIndex((prev) => (prev < machineImages.length - 1 ? prev + 1 : 0));
+        };
+
+        const prevImage = () => {
+          setLightboxIndex((prev) => (prev > 0 ? prev - 1 : machineImages.length - 1));
+        };
+
+        // Expert section lightbox handlers
+        const openExpertLightbox = (index) => {
+          setExpertLightboxIndex(index);
+          setExpertLightboxOpen(true);
+        };
+
+        const closeExpertLightbox = () => {
+          setExpertLightboxOpen(false);
+        };
+
+        const nextExpertImage = () => {
+          setExpertLightboxIndex((prev) => (prev < expertiseImages.length - 1 ? prev + 1 : 0));
+        };
+
+        const prevExpertImage = () => {
+          setExpertLightboxIndex((prev) => (prev > 0 ? prev - 1 : expertiseImages.length - 1));
+        };
+
+        const t = translations[language];
+        const sections = t.services.sections;
+        const insights = t.hero.insights;
+        const expertisePillars = t.expertise.pillars;
+        const metrics = t.engagements.metrics;
+        const footerLinks = t.footer.columns;
+        const currentYear = new Date().getFullYear();
+        const rightsText = t.footerBottom.rights.replace('{year}', currentYear);
+
+        return (
+          <>
+            <header>
+              <nav className="nav">
+                <a href="#" className="logo" aria-label="ORA-TEK Engineering">
+                  <img src="./logo.jpg" alt="ORA-TEK Engineering" />
+                </a>
+                <div className={`nav-links${menuOpen ? ' open' : ''}`}>
+                  <a href="#accueil" onClick={handleNavClick}>
+                    {t.hero.title.split(':')[0] || t.hero.title}
+                  </a>
+                  <a href="#services" onClick={handleNavClick}>
+                    {t.services.label}
+                  </a>
+                  <a href="#machines" onClick={handleNavClick}>
+                    {t.machines.label}
+                  </a>
+                  <a href="#expertise" onClick={handleNavClick}>
+                    {t.expertise.label}
+                  </a>
+                  <a href="#engagements" onClick={handleNavClick}>
+                    {t.engagements.label}
+                  </a>
+                  <a href="#contact" onClick={handleNavClick}>
+                    {t.cta.button}
+                  </a>
+                </div>
+                <div className="nav-actions">
+                  <div className="language-switcher" role="group" aria-label={t.languageSwitcherLabel}>
+                    {Object.entries(languageShortCodes).map(([code, label]) => (
+                      <button
+                        key={code}
+                        type="button"
+                        className={`language-button${language === code ? ' active' : ''}`}
+                        onClick={() => handleLanguageChange(code)}
+                        aria-pressed={language === code}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    className={`nav-toggle${menuOpen ? ' active' : ''}`}
+                    type="button"
+                    onClick={toggleMenu}
+                    aria-label={menuOpen ? t.navToggle.close : t.navToggle.open}
+                    aria-expanded={menuOpen}
+                  >
+                    <span></span>
+                  </button>
+                </div>
+              </nav>
+            </header>
+
+            <main>
+              <section className="hero" id="accueil">
+                <div className="hero-content">
+                  <h1>{t.hero.title}</h1>
+                  <p>{t.hero.description}</p>
+                  <div className="hero-cta">
+                    <a className="button" href="#contact">
+                      {t.hero.ctaPrimary}
+                    </a>
+                    <a className="button secondary" href="#expertise">
+                      {t.hero.ctaSecondary}
+                    </a>
+                  </div>
+                </div>
+                <div className="hero-insights">
+                  <div className="hero-image-card">
+                    <img src="./ora1.jpg" alt="ORA-TEK atelier" />
+                    <div className="hero-image-overlay">
+                        <span>ORA-TEK EXPERIENCE</span>
+                        <strong>
+                          {language === 'fr' && 'Une immersion dans nos ateliers d’ingénierie avancée'}
+                          {language === 'en' && 'Step inside our advanced engineering facilities'}
+                          {language === 'sq' && 'Një përvojë nga afër në punishtet tona të inxhinierisë'}
+                        </strong>
+                    </div>
+                  </div>
+                  {insights.map((insight) => (
+                    <div className="insight-card" key={insight.title}>
+                      <h3>{insight.title}</h3>
+                      <p>{insight.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section id="services">
+                <div className="section-heading">
+                  <span>{t.services.label}</span>
+                  <h2>{t.services.title}</h2>
+                  <p>{t.services.description}</p>
+                </div>
+                <div className="cards-grid">
+                  {sections.map((section) => (
+                    <article key={section.id} id={section.id} className="card">
+                      <span className="card-badge">{section.badge}</span>
+                      <h3>{section.title}</h3>
+                      <p>{section.description}</p>
+                      <ul>
+                        {section.points.map((point) => (
+                          <li key={point}>{point}</li>
+                        ))}
+                      </ul>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section id="machines">
+                <div className="section-heading">
+                  <span>{t.machines.label}</span>
+                  <h2>{t.machines.title}</h2>
+                  <p>{t.machines.description}</p>
+                </div>
+                <div className="machines-gallery">
+                  {machineImages.map((src, index) => (
+                    <div
+                      key={index}
+                      className="machine-card"
+                      onClick={() => openLightbox(index)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          openLightbox(index);
+                        }
+                      }}
+                    >
+                      <img src={src} alt={`Machine ORA-TEK ${index + 1}`} />
+                      <div className="machine-overlay">
+                        <span className="machine-label">{machineLabels[index]}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section id="expertise" className="split-section">
+                <div>
+                  <div className="section-heading">
+                    <span>{t.expertise.label}</span>
+                    <h2>{t.expertise.title}</h2>
+                    <p>{t.expertise.description}</p>
+                  </div>
+                  <div
+                    className="cards-grid"
+                    style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem' }}
+                  >
+                    {expertisePillars.map((pillar) => (
+                      <article
+                        key={pillar.title}
+                        className="card"
+                        style={{
+                          padding: '1.5rem',
+                          background: 'var(--surface-soft)',
+                          border: '1px solid rgba(41, 92, 150, 0.22)',
+                          boxShadow: '0 18px 32px rgba(0, 0, 0, 0.25)'
+                        }}
+                      >
+                        <h3 style={{ fontSize: '1.2rem' }}>{pillar.title}</h3>
+                        <ul>
+                          {pillar.points.map((point) => (
+                            <li key={point}>{point}</li>
+                          ))}
+                        </ul>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+                <img
+                  src="./orajasht.jpg"
+                  alt="Atelier ORA-TEK"
+                  className="expert-image"
+                  onClick={() => openExpertLightbox(0)}
+                  style={{ cursor: 'pointer' }}
+                />
+              </section>
+
+              <section id="engagements">
+                <div className="section-heading">
+                  <span>{t.engagements.label}</span>
+                  <h2>{t.engagements.title}</h2>
+                  <p>{t.engagements.description}</p>
+                </div>
+                <div className="metrics">
+                  {metrics.map((metric) => (
+                    <div className="metric" key={metric.label}>
+                      <strong>{metric.value}</strong>
+                      <span>{metric.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="cta" id="contact">
+                <div className="cta-content">
+                  <div>
+                    <h2>{t.cta.title}</h2>
+                    <p>{t.cta.description}</p>
+                  </div>
+                  <div>
+                    <a className="button" href="mailto:arafat.sahiti@ora-tek-engineering.com" style={{ transition: 'none' }}>
+                      {t.cta.button}
+                    </a>
+                    <p style={{ marginTop: '1rem', color: 'rgba(230,240,255,0.82)' }}>
+                      {t.cta.info.map((line, index) => (
+                        <React.Fragment key={`${line}-${index}`}>
+                          {line}
+                          {index < t.cta.info.length - 1 && <br />}
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </main>
+
+            <footer>
+              <div className="footer-content">
+                {footerLinks.map((column) => (
+                  <div key={column.title}>
+                    <h4>{column.title}</h4>
+                    <div className="footer-links">
+                      {column.items.map((item) => (
+                        <span key={item}>{item}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <div>
+                  <h4>{t.footer.stayConnected}</h4>
+                  <div className="footer-links">
+                    <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">
+                      {t.footer.linkedin}
+                    </a>
+                    <a
+                      href="https://era-engineering.ch/what-we-do/electrical-engineering/"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {t.footer.inspiration}
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className="footer-bottom">
+                <span>{rightsText}</span>
+                <span>{t.footerBottom.legal}</span>
+              </div>
+            </footer>
+
+            {lightboxOpen && (
+              <div
+                className={`lightbox${lightboxOpen ? ' open' : ''}`}
+                onClick={closeLightbox}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Machine gallery viewer"
+              >
+                <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    className="lightbox-close"
+                    onClick={closeLightbox}
+                    aria-label="Close gallery"
+                  >
+                    ×
+                  </button>
+                  <button
+                    className="lightbox-nav prev"
+                    onClick={prevImage}
+                    aria-label="Previous image"
+                  >
+                    ‹
+                  </button>
+                  <img
+                    className="lightbox-image"
+                    src={machineImages[lightboxIndex]}
+                    alt={`Machine ORA-TEK ${lightboxIndex + 1}`}
+                  />
+                  <button
+                    className="lightbox-nav next"
+                    onClick={nextImage}
+                    aria-label="Next image"
+                  >
+                    ›
+                  </button>
+                  <div className="lightbox-counter">
+                    {lightboxIndex + 1} / {machineImages.length}
+                  </div>
+                </div>
+              </div>
+            )}
+            {expertLightboxOpen && (
+              <div
+                className={`lightbox${expertLightboxOpen ? ' open' : ''}`}
+                onClick={closeExpertLightbox}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Expert image viewer"
+              >
+                <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    className="lightbox-close"
+                    onClick={closeExpertLightbox}
+                    aria-label="Close gallery"
+                  >
+                    ×
+                  </button>
+                  <button
+                    className="lightbox-nav prev"
+                    onClick={prevExpertImage}
+                    aria-label="Previous image"
+                  >
+                    ‹
+                  </button>
+                  <img
+                    className="lightbox-image"
+                    src={expertiseImages[expertLightboxIndex]}
+                    alt={`Expert image ${expertLightboxIndex + 1}`}
+                  />
+                  <button
+                    className="lightbox-nav next"
+                    onClick={nextExpertImage}
+                    aria-label="Next image"
+                  >
+                    ›
+                  </button>
+                  <div className="lightbox-counter">
+                    {expertLightboxIndex + 1} / {expertiseImages.length}
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
+
