@@ -1742,7 +1742,8 @@
         }, []);
 
   const machineImages = ['./ora2.jpg', './ora3.jpg', './ora4.jpg', './ora5.jpg'];
-  const expertiseImages = ['./orastore.jpg' , './orajasht.jpg' ];
+  // Show orastore.jpg externally and open it first in the expert lightbox
+  const expertiseImages = ['./orastore.jpg', './orajasht.jpg'];
         const machineLabels = ['CNC Precision', 'Advanced Manufacturing', 'Industrial Excellence', 'Precision Engineering'];
 
         React.useEffect(() => {
@@ -2022,7 +2023,7 @@
                   </div>
                 </div>
                 <img
-                  src="./orajasht.jpg"
+                  src="./orastore.jpg"
                   alt="Atelier ORA-TEK"
                   className="expert-image"
                   onClick={() => openExpertLightbox(0)}
